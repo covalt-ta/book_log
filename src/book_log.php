@@ -1,0 +1,92 @@
+<?php
+
+// 登録処理
+function registration()
+{
+    echo '読書ログを登録してください' . PHP_EOL;
+    echo '書籍名:';
+    $title = trim(fgets(STDIN));
+
+    echo '著者名:';
+    $author = trim(fgets(STDIN));
+
+    echo '読書状況:';
+    $status = trim(fgets(STDIN));
+
+    echo '評価(5以下の整数):';
+    $score = trim(fgets(STDIN));
+
+    echo '感想:';
+    $review = trim(fgets(STDIN));
+
+    echo '登録が完了しました' . PHP_EOL . PHP_EOL;
+    $books = array(
+        '書籍名:' => $title,
+        '著者名:' => $author,
+        '読書状況:' => $status,
+        '評価:' => $score,
+        '感想:' => $review
+    );
+    return $books;
+}
+
+// // 表示処理
+function display($books)
+{
+    if (empty($books)) {
+        echo '登録されたログがありません' . PHP_EOL . PHP_EOL;
+    } else {
+        for ($i = 0; $i < count($books); $i++) {
+            echo $i . ':' . $books[$i]['書籍名:'] . PHP_EOL;
+        }
+        echo 'ログを表示したいタイトルの番号:';
+        $select_book = trim(fgets(STDIN));
+
+        foreach ($books[$select_book] as $key => $value) {
+            echo $key . $value . PHP_EOL;
+        }
+        echo $books[$select_book]['書籍名:'] . 'のログを表示しました' . PHP_EOL . PHP_EOL;
+    }
+}
+
+// 変数定義
+$menus = array(
+    1 => '読書ログを登録',
+    2 => '読書ログを表示',
+    9 => 'アプリケーションを終了'
+);
+
+$books = array();
+$select = 0;
+
+// メニュー選択
+while ($select < 9) {
+    foreach ($menus as $key => $value) {
+        echo $key . '. ' . $value . PHP_EOL;
+    }
+
+    echo '番号を選択してください(';
+    foreach ($menus as $key => $value) {
+        echo $key . ',';
+    }
+    echo '): ';
+    $select = trim(fgets(STDIN));
+    if ($select == 1) {
+        $books[] =  registration($books);
+    } elseif ($select == 2) {
+        display($books);
+    } elseif ($select != 9) {
+        echo '正しい番号を入力してください' . PHP_EOL;
+    }
+}
+
+
+// echo $books[0][0];
+
+// display($books);
+// echo '読書ログを表示します' . PHP_EOL;
+// echo "書籍名:{$title}" . PHP_EOL;
+// echo "著者名: {$author}" . PHP_EOL;
+// echo "読書状況: {$status}" . PHP_EOL;
+// echo '評価:' . $score . '点' . PHP_EOL;
+// echo "感想: {$review}" . PHP_EOL;
