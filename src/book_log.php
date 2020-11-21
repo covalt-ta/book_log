@@ -1,5 +1,21 @@
 <?php
 
+// MySQL接続の関数
+function dbConnect()
+{
+    $link = mysqli_connect('db', 'book_log', 'pass', 'book_log');
+
+    // MySQLに接続失敗時の処理
+    if (!$link) {
+        echo 'Error: データベースに接続出来ませんでした' . PHP_EOL;
+        echo 'Dubagging Error: ' . mysqli_connect_error() . PHP_EOL;
+        exit;
+    }
+
+    echo 'データベースに接続できました' . PHP_EOL;
+    return $link;
+}
+
 // 登録処理の関数
 function registration()
 {
@@ -64,7 +80,7 @@ function selectMenu($menus)
     return $select;
 }
 
-// 変数定義
+// 変数の初期化
 $menus = [
     1 => '読書ログを登録',
     2 => '読書ログを表示',
@@ -73,15 +89,21 @@ $menus = [
 $books = [];
 $select = 0;
 
-// メニュー選択
-while ($select != 9) {
+// 以下より実行処理(メニュー選択の繰り返し処理)
+$link =  dbConnect();
+
+while (true) {
     $select = selectMenu($menus);
 
     if ($select === '1') {
         $books[] = registration($books);
     } elseif ($select === '2') {
         display($books);
-    } elseif ($select != '9') {
-        echo '正しい番号を入力してください' . PHP_EOL;
+    } elseif ($select === '9') {
+        mysqli_close($link);
+        echo 'プログラムを終了します' . PHP_EOL;
+        break;
+    } else {
+        echo '正しい番号を入力してください' . PHP_EOL . PHP_EOL;
     }
 }
