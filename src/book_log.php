@@ -17,7 +17,7 @@ function dbConnect()
 }
 
 // 登録処理の関数
-function registration()
+function registration($link)
 {
     echo '読書ログを登録してください' . PHP_EOL;
     echo '書籍名:';
@@ -30,19 +30,36 @@ function registration()
     $status = trim(fgets(STDIN));
 
     echo '評価(5以下の整数):';
-    $score = trim(fgets(STDIN));
+    $score = (int) trim(fgets(STDIN));
 
     echo '感想:';
-    $review = trim(fgets(STDIN));
+    $comment = trim(fgets(STDIN));
 
-    echo '登録が完了しました' . PHP_EOL . PHP_EOL;
-    return [
-        '書籍名:' => $title,
-        '著者名:' => $author,
-        '読書状況:' => $status,
-        '評価:' => $score,
-        '感想:' => $review
-    ];
+    // SQL文を発行してデータベースにデータを登録する $linkの引数が必要
+    $sql = <<<EOD
+        INSERT INTO reviews(
+            title,
+            author,
+            status,
+            score,
+            comment
+        ) VALUES (
+            "{$title}",
+            "{$author}",
+            "{$status}",
+            $score,
+            "{$comment}"
+        )
+EOD;
+
+    $result = mysqli_query($link, $sql);
+
+    if ($result) {
+        echo 'データを登録できました' . PHP_EOL . PHP_EOL;
+    } else {
+        echo 'データの登録に失敗しました' . PHP_EOL;
+        echo 'Debugging Error: ' . mysqli_error($link) . PHP_EOL . PHP_EOL;
+    }
 }
 
 // 表示処理の関数
@@ -96,7 +113,7 @@ while (true) {
     $select = selectMenu($menus);
 
     if ($select === '1') {
-        $books[] = registration($books);
+        registration($link);
     } elseif ($select === '2') {
         display($books);
     } elseif ($select === '9') {
