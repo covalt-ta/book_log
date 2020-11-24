@@ -16,24 +16,72 @@ function dbConnect()
     return $link;
 }
 
+function validate($review)
+{
+    $errors = [];
+    // 書籍名が正しく入力されているかチェックする
+    if (!strlen($review['title'])) {
+        $errors['title'] =  '書籍名を入力してください';
+    } elseif (strlen($review['title']) > 255) {
+        $errors['title'] = '書籍名は255文字以内で入力してください';
+    }
+
+    // 著者名が正しく入力されているかチェック
+    if (!strlen($review['author'])) {
+        $errors['author'] =  '著者名を入力してください';
+    } elseif (strlen($review['author']) > 255) {
+        $errors['author'] = '著者名は255文字以内で入力してください';
+    }
+
+    // 読書状況が正しく入力されているかチェック
+    $check_status = ['未読', '読んでいる', '読了'];
+    if (!in_array($review['status'], $check_status, true)) {
+        $errors['status'] = '読書状況は「未読」「読んでいる」「読了」のいずれかを入力してください';
+    }
+
+    // 評価が1~5の間かチェックする
+    if ($review['score'] < 1 || $review['score'] > 5) {
+        $errors['score'] = '評価は1〜5の間の数値で入力してください';
+    }
+    // 感想が正しく入力されている
+    if (!strlen($review['comment'])) {
+        $errors['comment'] =  '感想を入力してください';
+    } elseif (strlen($review['comment']) > 1000) {
+        $errors['comment'] = '感想は1000文字以内で入力してください';
+    }
+
+    return $errors;
+}
+
+
 // 登録処理の関数
 function registration($link)
 {
+    $review = [];
     echo '読書ログを登録してください' . PHP_EOL;
     echo '書籍名:';
-    $title = trim(fgets(STDIN));
+    $review['title'] = trim(fgets(STDIN));
 
     echo '著者名:';
-    $author = trim(fgets(STDIN));
+    $review['author'] = trim(fgets(STDIN));
 
-    echo '読書状況:';
-    $status = trim(fgets(STDIN));
+    echo '読書状況(未読・読んでいる・読了):';
+    $review['status'] = trim(fgets(STDIN));
 
     echo '評価(5以下の整数):';
-    $score = (int) trim(fgets(STDIN));
+    $review['score'] = (int) trim(fgets(STDIN));
 
     echo '感想:';
-    $comment = trim(fgets(STDIN));
+    $review['comment'] = trim(fgets(STDIN));
+
+    $validated = validate($review);
+
+    if (count($validated) > 0) {
+        foreach ($validated as $error) {
+            echo 'エラー: ' . $error . PHP_EOL;
+        }
+        return;
+    }
 
     // SQL文を発行してデータベースにデータを登録する $linkの引数が必要
     $sql = <<<EOD
@@ -44,11 +92,11 @@ function registration($link)
             score,
             comment
         ) VALUES (
-            "{$title}",
-            "{$author}",
-            "{$status}",
-            $score,
-            "{$comment}"
+            "{$review['title']}",
+            "{$review['author']}",
+            "{$review['status']}",
+            "{$review['score']}",
+            "{$review['comment']}"
         )
 EOD;
 
