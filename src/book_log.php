@@ -111,22 +111,55 @@ EOD;
 }
 
 // 表示処理の関数
-function display($books)
+function display($link)
 {
-    if (empty($books)) {
-        echo '登録された読書ログがありません' . PHP_EOL . PHP_EOL;
-    } else {
-        for ($i = 0; $i < count($books); $i++) {
-            echo $i . ':' . $books[$i]['書籍名:'] . PHP_EOL;
-        }
-        echo 'ログを表示したいタイトルの番号:';
-        $select_book = trim(fgets(STDIN));
+    $query = 'SELECT id, title FROM reviews';
+    $result = mysqli_query($link, $query);
 
-        foreach ($books[$select_book] as $key => $value) {
-            echo $key . $value . PHP_EOL;
-        }
-        echo $books[$select_book]['書籍名:'] . 'の読書ログを表示しました' . PHP_EOL . PHP_EOL;
+    // 通し番号順にタイトルを表示、検索用に通し番号とidを連想配列に格納
+    $i = 0;
+    while ($review = mysqli_fetch_assoc($result)) {
+        echo "{$i}: " . $review['title'] . PHP_EOL;
+        $list[$i] = $review['id'];
+        $i++;
     }
+    // ログ表示を終了させる通し番号を連想配列の末尾に追加、
+    $list[] = '読書ログの表示を終了する';
+    echo array_key_last($list) . ': ' . end($list) . PHP_EOL;
+
+    // ログ表示させる繰り返し処理
+    while (true) {
+        echo 'ログを表示したいタイトルの番号:';
+        $select_book = (int) trim(fgets(STDIN));
+
+        // $list（連想配列 通し番号とテーブルID） の中で、$select_book(表示させたい番号)と一致するレコードのIDを取得する
+        if ($list[$select_book] === '読書ログの表示を終了する') {
+            mysqli_free_result($result);
+            return;
+        } elseif (isset($list[$select_book])) {
+            $target_id = ($list[$select_book]);
+        } else {
+            echo '表示したいタイトル番号の入力が正しくありません' . PHP_EOL;
+            mysqli_free_result($result);
+            return;
+        }
+
+        // 取得したIDに応じたSQLを発行してデータを表示する
+        $target_query = "SELECT id, title, author, status, score, comment FROM reviews WHERE id={$target_id}";
+        $result = mysqli_query($link, $target_query);
+        $review = mysqli_fetch_assoc($result);
+        echo "--------------------" . PHP_EOL;
+        echo "書籍名: " . $review['title'] . PHP_EOL;
+        echo "著者名: " . $review['author'] . PHP_EOL;
+        echo "読書状況: " . $review['status'] . PHP_EOL;
+        echo "評価: " . $review['score'] . PHP_EOL;
+        echo "感想: " . $review['comment'] . PHP_EOL;
+        echo "--------------------" . PHP_EOL;
+    }
+
+
+    // メモリの開放
+    mysqli_free_result($result);
 }
 
 // メニュー選択の関数
@@ -163,7 +196,7 @@ while (true) {
     if ($select === '1') {
         registration($link);
     } elseif ($select === '2') {
-        display($books);
+        display($link);
     } elseif ($select === '9') {
         mysqli_close($link);
         echo 'プログラムを終了します' . PHP_EOL;

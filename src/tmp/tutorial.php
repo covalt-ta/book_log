@@ -154,3 +154,13 @@ $delimiter = 'と';
 print_r(explode($delimiter, $data)); // [0] => ルフィ [1] => ゾロ [2] => サンジ [3] => ナミ [4] => ウソップ [5] => チョッパー
 print_r(explode($delimiter, $data, 2)); // [0] => ルフィ [1] => ゾロとサンジとナミとウソップとチョッパー
 print_r(explode($delimiter, $data, -2)); // [0] => ルフィ [1] => ゾロ [2] => サンジ [3] => ナミ 「-2」では配列化して末尾から2つの要素を削除の意味
+
+
+// SQLを使ってデータの取得
+// 全データの取得
+SELECT *
+FROM reviews;
+
+// 書籍名、読書状況、評価のみを取得
+SELECT title, status, score
+FROM reviews;
