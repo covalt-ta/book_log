@@ -1,4 +1,17 @@
 <?php
+// 練習問題5.2
+// mb_substr関数を用い、文字列「サーバーサイド技術」から「サイド」という文字列を抽出する
+$str = 'サーバーサイド技術';
+echo mb_substr($str, 4, -2) . PHP_EOL;
+echo mb_substr($str, 4, 3) . PHP_EOL;
+
+// mb_convert_kana関数を使って「 ｻｰﾊﾞｰｻｲﾄﾞ技術」に含まれる半角カナを全角カタカナに変換する
+$str = 'ｻｰﾊﾞｰｻｲﾄﾞ技術';
+echo mb_convert_kana($str, 'KVC') . PHP_EOL;
+
+// 変数$dataの文字コードを「Shift-JIS」から「EUP-JP」に変換する
+$data = mb_convert_encoding($data, 'EUP-JP', 'SJIS');
+
 
 // $test_result = 80;
 
@@ -143,24 +156,24 @@
 // echo str_replace($src, $rep, $str, $count) . PHP_EOL; //庭には、二羽にわとりがいる。庭には、ね,  配列を渡すことも可能。
 // echo $count . PHP_EOL; // 4
 
-// explode関数
-// 指定の文字を区切りとして、文字列を配列に分割する関数
-// array explode(string $delimiter, string $str [, int $limit])
-// $delimiter 区切り文字
-// $str 分割対象の文字列
-// $limit 分割の最大数（デフォルトは制限なし）
-$data = 'ルフィとゾロとサンジとナミとウソップとチョッパー';
-$delimiter = 'と';
-print_r(explode($delimiter, $data)); // [0] => ルフィ [1] => ゾロ [2] => サンジ [3] => ナミ [4] => ウソップ [5] => チョッパー
-print_r(explode($delimiter, $data, 2)); // [0] => ルフィ [1] => ゾロとサンジとナミとウソップとチョッパー
-print_r(explode($delimiter, $data, -2)); // [0] => ルフィ [1] => ゾロ [2] => サンジ [3] => ナミ 「-2」では配列化して末尾から2つの要素を削除の意味
+// // explode関数
+// // 指定の文字を区切りとして、文字列を配列に分割する関数
+// // array explode(string $delimiter, string $str [, int $limit])
+// // $delimiter 区切り文字
+// // $str 分割対象の文字列
+// // $limit 分割の最大数（デフォルトは制限なし）
+// $data = 'ルフィとゾロとサンジとナミとウソップとチョッパー';
+// $delimiter = 'と';
+// print_r(explode($delimiter, $data)); // [0] => ルフィ [1] => ゾロ [2] => サンジ [3] => ナミ [4] => ウソップ [5] => チョッパー
+// print_r(explode($delimiter, $data, 2)); // [0] => ルフィ [1] => ゾロとサンジとナミとウソップとチョッパー
+// print_r(explode($delimiter, $data, -2)); // [0] => ルフィ [1] => ゾロ [2] => サンジ [3] => ナミ 「-2」では配列化して末尾から2つの要素を削除の意味
 
 
-// SQLを使ってデータの取得
-// 全データの取得
-SELECT *
-FROM reviews;
+// // SQLを使ってデータの取得
+// // 全データの取得
+// SELECT *
+// FROM reviews;
 
-// 書籍名、読書状況、評価のみを取得
-SELECT title, status, score
-FROM reviews;
+// // 書籍名、読書状況、評価のみを取得
+// SELECT title, status, score
+// FROM reviews;
