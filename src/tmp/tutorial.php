@@ -1,17 +1,31 @@
 <?php
-// 練習問題5.2
-// mb_substr関数を用い、文字列「サーバーサイド技術」から「サイド」という文字列を抽出する
-$str = 'サーバーサイド技術';
-echo mb_substr($str, 4, -2) . PHP_EOL;
-echo mb_substr($str, 4, 3) . PHP_EOL;
+// // 練習問題5.2
+// // mb_substr関数を用い、文字列「サーバーサイド技術」から「サイド」という文字列を抽出する
+// $str = 'サーバーサイド技術';
+// echo mb_substr($str, 4, -2) . PHP_EOL;
+// echo mb_substr($str, 4, 3) . PHP_EOL;
 
-// mb_convert_kana関数を使って「 ｻｰﾊﾞｰｻｲﾄﾞ技術」に含まれる半角カナを全角カタカナに変換する
-$str = 'ｻｰﾊﾞｰｻｲﾄﾞ技術';
-echo mb_convert_kana($str, 'KVC') . PHP_EOL;
+// // mb_convert_kana関数を使って「 ｻｰﾊﾞｰｻｲﾄﾞ技術」に含まれる半角カナを全角カタカナに変換する
+// $str = 'ｻｰﾊﾞｰｻｲﾄﾞ技術';
+// echo mb_convert_kana($str, 'KVC') . PHP_EOL;
 
-// 変数$dataの文字コードを「Shift-JIS」から「EUP-JP」に変換する
-$data = mb_convert_encoding($data, 'EUP-JP', 'SJIS');
+// // 変数$dataの文字コードを「Shift-JIS」から「EUP-JP」に変換する
+// $data = mb_convert_encoding($data, 'EUP-JP', 'SJIS');
 
+
+// 練習問題5.4
+// 正規表現を使用して郵便番号を取得する
+$str = '住所は〒184-0000 鎌ヶ谷市梶野町0−0−0です';
+preg_match('/([0-9]{3})-([0-9]{4})/', $str, $data);
+echo $data[0] . PHP_EOL;
+echo $data[1] . PHP_EOL;
+echo $data[2] . PHP_EOL;
+
+// 正規表現を用いて文字列「お問い合わせはCQW15204@nifty.comまで」のメールアドレス部分を
+// <a href='mailto:~'>タグで置き換える
+
+$str = 'お問い合わせはCQW15204@nifty.comまで';
+print preg_replace('/[a-z0-9\.\-]+@([a-z0-9\-]+\.)+[a-z0-9\-]+/i', '<a href="$0">$0</a>', $str);
 
 // $test_result = 80;
 
