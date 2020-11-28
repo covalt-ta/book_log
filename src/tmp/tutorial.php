@@ -1,5 +1,48 @@
 <?php
 
+// 「...」演算子を実引数に渡す例
+
+function getTriangleArea(float $base, float $heigth): float
+{
+    return  $base * $heigth / 2;
+}
+
+// echo getTriangleArea([10, 5]) . PHP_EOL; //引数を配列で渡すとエラー
+echo '三角形の面積は' . getTriangleArea(...[10, 5]) . PHP_EOL; //...演算子を用いると、配列の要素を展開して渡す
+
+
+// 練習問題6.3 総積を求めるproduct関数を作成
+// function product(float ...$args): float
+// {
+//     for ($i = 0; $i < count($args); $i++) {
+//         if ($i === 0) {
+//             $result = $args[0];
+//         } else {
+//             $result *= $args[$i];
+//         }
+//     }
+//     return $result;
+// }
+
+// foreachの方がシンプル
+function product(float ...$args): float
+{
+    $result = 1;
+    foreach ($args as $num) {
+        $result *= $num;
+    }
+    return $result;
+}
+echo product(10, 9, 100, 1) . PHP_EOL;
+
+
+// // ひし形の面積
+// function diamond(float $diagonal1, float $diagonal2): float
+// {
+//     return $diagonal1 * $diagonal2 / 2;
+// }
+// echo diamond(5, 10) . PHP_EOL;
+
 // 理解度チェック P213
 // 文字列関数を使って次のコードを書く
 // 1 「PHPはPHP:Hypertext Preprocessorの略です」の最後に登場するPHPの位置を求める
