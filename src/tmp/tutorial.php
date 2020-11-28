@@ -1,39 +1,91 @@
 <?php
 
-// 素数を求める関数（ジェネレータ）
-function getPrimes()
+// 一部の処理を他のジェネレータに委譲する（yield from / PHP7.0）
+// ファイルパスが格納された配列から、各ファイルの各行を出力するジェネレータ
+// 複雑なジェネレータを記述する際には、yield fromを使用すると処理を分離でき、可動性が上がる
+
+function readFiles(array $files)
 {
-    $num = 2; // 素数の開始値
-    // 2から順番に素数判定し、素数の場合にだけyield
-    while (true) {
-        if (isPrime($num)) {
-            yield $num;
-        }
-        $num++;
+    // 配列から順にファイルパスを取り出す
+    foreach ($files as $file) {
+        // ジェネレータreadLnesに処理を委ねる
+        yield from readLines($file);
     }
 }
 
-// 引数$valueが素数かどうかを判定する関数
-function isPrime(int $value): bool
+function readLines(string $path)
 {
-    $prime = true; // 素数かどうかを判定するフラグ
-    for ($i = 2; $i <= floor(sqrt($value)); $i++) {
-        if ($value % $i === 0) {
-            $prime = false;
-            break;
-        }
+    $file = fopen($path, 'rb') or die('ファイルがみつかりませんでした');
+    while ($line = fgets($file, 1024)) {
+        yield $line;
     }
-    return $prime;
+    fclose($file);
 }
 
-// 素数を順に出力
-foreach (getPrimes() as $prime) {
-    // 素数が101以上になったら終了させる
-    if ($prime > 100) {
-        die();
-    }
-    echo $prime . ',';
+$files = ['access.log', 'book_log.php'];
+foreach (readFiles($files) as $line) {
+    echo $line;
 }
+
+
+// ジェネレータ関数でreturn文を使用し、最終的な結果を返す
+// 引数$pathで指定されたファイルを行単位に読み込むジェネレータ 最終的に読み込んだファイルをの行数を返す
+
+// function readLines(string $path)
+// {
+//     $i = 0; //行数
+//     $file = fopen($path, 'rb') or die('ファイルが見つかりませんでした');
+//     // 行単位にテキストを取得＆yield
+//     while ($line = fgets($file, 1024)) {
+//         $i++;
+//         yield $line;
+//     }
+//     fclose($file);
+//     // 読み込んだテキスト行数を返す
+//     return $i;
+// }
+
+// $gen = readlines('access.log'); //この時点で$genには何が格納されている？
+// foreach ($gen as $line) {
+//     echo $line;
+// }
+
+// echo "{$gen->getReturn()}行ありました" . PHP_EOL;
+
+// // 素数を求める関数（ジェネレータ）
+// function getPrimes()
+// {
+//     $num = 2; // 素数の開始値
+//     // 2から順番に素数判定し、素数の場合にだけyield
+//     while (true) {
+//         if (isPrime($num)) {
+//             yield $num;
+//         }
+//         $num++;
+//     }
+// }
+
+// // 引数$valueが素数かどうかを判定する関数
+// function isPrime(int $value): bool
+// {
+//     $prime = true; // 素数かどうかを判定するフラグ
+//     for ($i = 2; $i <= floor(sqrt($value)); $i++) {
+//         if ($value % $i === 0) {
+//             $prime = false;
+//             break;
+//         }
+//     }
+//     return $prime;
+// }
+
+// // 素数を順に出力
+// foreach (getPrimes() as $prime) {
+//     // 素数が101以上になったら終了させる
+//     if ($prime > 100) {
+//         die();
+//     }
+//     echo $prime . ',';
+// }
 
 // 「...」演算子を実引数に渡す例
 // function getTriangleArea(float $base, float $heigth): float
@@ -88,20 +140,20 @@ foreach (getPrimes() as $prime) {
 // $str = 'PHPはPHP:Hypertext Preprocessorの略です';
 // echo mb_strrpos($str, 'PHP') . PHP_EOL;
 
-// 2
-$str = '%sの気温は%.1f℃です。';
-$rep = ['弘前', 15.156];
-printf($str, '弘前', 15.156);
+// // 2
+// $str = '%sの気温は%.1f℃です。';
+// $rep = ['弘前', 15.156];
+// printf($str, '弘前', 15.156);
 
-// 3
-$str = 'wings knowledge';
-echo ucwords($str) . PHP_EOL;
+// // 3
+// $str = 'wings knowledge';
+// echo ucwords($str) . PHP_EOL;
 
-// 4
-$str = 'ボクの名前はリオです。';
-$search = ['ボク', 'リオ'];
-$rep = ['僕', '凛生'];
-echo str_replace($search, $rep, $str) . PHP_EOL;
+// // 4
+// $str = 'ボクの名前はリオです。';
+// $search = ['ボク', 'リオ'];
+// $rep = ['僕', '凛生'];
+// echo str_replace($search, $rep, $str) . PHP_EOL;
 
 
 // 配列の操作
@@ -110,17 +162,17 @@ echo str_replace($search, $rep, $str) . PHP_EOL;
 // 2 先頭に「掛谷」「土井」を加える
 // 3 配列の3〜5番目の要素を取得する
 
-// 1
-$data = ['高江', '青木', '片淵'];
-array_push($data, '山田', '日尾');
-var_export($data);
+// // 1
+// $data = ['高江', '青木', '片淵'];
+// array_push($data, '山田', '日尾');
+// var_export($data);
 
-// 2
-array_unshift($data, '掛谷', '土井');
-var_export($data);
+// // 2
+// array_unshift($data, '掛谷', '土井');
+// var_export($data);
 
-// 3
-var_export(array_slice($data, 2, 3));
+// // 3
+// var_export(array_slice($data, 2, 3));
 
 
 // 問3
