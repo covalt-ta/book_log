@@ -1,31 +1,104 @@
 <?php
 
+// 練習問題7.3
+// 1 directoryIterrator
+// 2 foreach
+// 3 isFile()
+// 4 mb_convert_encoding
+// 5 getFilename()
+
+// 練習問題7.2
+// 日付文字列「2020年12月6日」をDateTimeクラスを使って解析し、「YYYY/MM/DD」の形式で出力する
+$date = new DateTime('2020/12/6');
+echo $date->format('Y/m/d(D)') . PHP_EOL;
+
+// 日本語でのインスタンス生成する場合は、DateTimeクラスメソッドのcreateFromFormatメソッドを使用する
+$dt = DateTime::createFromFormat('Y年m月d日', '2020年12月06日');
+print $dt->format('Y/m/d(D)');
+var_dump($date);
+var_dump($dt);
+
+// // サンプル
+// $dt1 = new DateTime('1983/12/06 12:00:00');
+// $dt2 = new DateTime();
+
+// $interval = $dt2->diff($dt1);
+// //diffメソッドの返り値はDateIntervalオブジェクトであり、DataTimeクラスのformatメソッドとは異なる点に注意
+// echo $interval->format('%Y年%m月%d日 %H時%i分') . PHP_EOL; //大文字の記述子は結果が一桁の場合、先頭に0を補う
+// var_dump($dt2);
+
+// // 日付時刻関数
+// $now = time();
+// echo date('Y年m月d日', $now) . PHP_EOL;
+
+// // カレンダーをテキスト表示するユーザー定義関数を作成する
+// function calendar($year, $month)
+// {
+//     echo "{$year}年{$month}月のカレンダー" . PHP_EOL;
+//     for ($i = 1; $i < 32; $i++) {
+//         if (checkdate($month, $i, $year)) {
+//             print $i . "\t";
+//         }
+//     }
+// }
+// calendar(300, 2);
+
+// ユーザー定義関数の理解度チェック P253
+// 問1
+// 平行四辺形の高さを求める関数 引数デフォルト値1とする
+// function square(float $base = 1, float $heigth = 1): float
+// {
+//     return $base * $heigth;
+// }
+// echo square(5, 10) . PHP_EOL;
+
+// 問2
+// 外部ファイルをincludeする命令4種、その違い
+// require       読み込みファイルがないと処理を中断する
+// include       読み込みファイルがない場合、アラートを出すが、処理は中断されない
+// require_once  一度読み込んだファイルの場合、二度目は読み込まない,特別な理由がなければ利用推奨
+// include_once  一度読み込んだファイルの場合、二度目は読み込まない
+
+// 問3
+// 1 callable
+// 2 $args
+// 3 $func($arg)
+// 4 list
+// 5 return $num * $num;
+
+// 問4
+// 1 1
+// 2 null
+// 3 2
+
+
+
 // 一部の処理を他のジェネレータに委譲する（yield from / PHP7.0）
 // ファイルパスが格納された配列から、各ファイルの各行を出力するジェネレータ
 // 複雑なジェネレータを記述する際には、yield fromを使用すると処理を分離でき、可動性が上がる
 
-function readFiles(array $files)
-{
-    // 配列から順にファイルパスを取り出す
-    foreach ($files as $file) {
-        // ジェネレータreadLnesに処理を委ねる
-        yield from readLines($file);
-    }
-}
+// function readFiles(array $files)
+// {
+//     // 配列から順にファイルパスを取り出す
+//     foreach ($files as $file) {
+//         // ジェネレータreadLnesに処理を委ねる
+//         yield from readLines($file);
+//     }
+// }
 
-function readLines(string $path)
-{
-    $file = fopen($path, 'rb') or die('ファイルがみつかりませんでした');
-    while ($line = fgets($file, 1024)) {
-        yield $line;
-    }
-    fclose($file);
-}
+// function readLines(string $path)
+// {
+//     $file = fopen($path, 'rb') or die('ファイルがみつかりませんでした');
+//     while ($line = fgets($file, 1024)) {
+//         yield $line;
+//     }
+//     fclose($file);
+// }
 
-$files = ['access.log', 'book_log.php'];
-foreach (readFiles($files) as $line) {
-    echo $line;
-}
+// $files = ['access.log', 'book_log.php'];
+// foreach (readFiles($files) as $line) {
+//     echo $line;
+// }
 
 
 // ジェネレータ関数でreturn文を使用し、最終的な結果を返す
